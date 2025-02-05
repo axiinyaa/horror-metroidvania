@@ -8,6 +8,7 @@ public class Grounded : BasePlayerState
     [Header("Parameters")]
     public float walkSpeed = 5;
     public float runSpeed = 10;
+    public float crawlSpeed = 2;
     public float coyoteTime = 0.1f;
     float curCoyoteTime;
 
@@ -15,7 +16,6 @@ public class Grounded : BasePlayerState
     public override void Enter()
     {
         base.Enter();
-        player.body.velocity = Vector2.zero;
     }
 
     public override void Process()
@@ -31,7 +31,7 @@ public class Grounded : BasePlayerState
             curCoyoteTime -= Time.deltaTime;
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && coyoteTime > 0)
+        if (Input.GetKeyDown(KeyCode.Space) && curCoyoteTime > 0)
         {
             stateMachine.ChangeState<Jump>();
             return;
@@ -40,7 +40,33 @@ public class Grounded : BasePlayerState
 
     public override void PhysicsProcess()
     {
-        float speed = Input.GetKey(KeyCode.LeftShift) ? runSpeed : walkSpeed;
+        var pos = player.transform.position + new Vector3(0f, 0.2f, 0f);
+        bool isCeiling = Physics2D.Raycast(pos, Vector2.up, 1, player.groundLayer);
+
+        Debug.DrawRay(pos, Vector2.up, Color.red);
+
+        var crouching = Input.GetKey(KeyCode.LeftControl);
+        var running = Input.GetKey(KeyCode.LeftShift);
+
+        // We should stay crouching if there is a ceiling above us
+        crouching = isCeiling ? true : crouching;
+        
+        player.SwitchCollider(crouching);
+
+        float speed;
+
+        speed = walkSpeed;
+        
+        if (running)
+        {
+            speed = runSpeed;
+        }
+
+        if (crouching)
+        {
+            speed = crawlSpeed;
+        }
+
         float x = Input.GetAxis("Horizontal") * speed;
 
         player.body.velocity = new Vector2(x, player.body.velocity.y);
