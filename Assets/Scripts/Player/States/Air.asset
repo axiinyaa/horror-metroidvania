@@ -15,8 +15,8 @@ MonoBehaviour:
   stateMachine: {fileID: 0}
   player: {fileID: 0}
   airSpeed: 5
-  fastAirSpeed: 6
-  gravity: 2
+  fastAirSpeed: 8
+  gravity: 5
   jumpTime: 0.5
   groundCheckDistance: 1
-  wasRunning: 0
+  wasRunning: 1

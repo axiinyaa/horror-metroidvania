@@ -9,12 +9,12 @@ public class GameCamera : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        transform.position = Vector3.Lerp(transform.position, new Vector3(player.transform.position.x, transform.position.y, -10), 0.05f);
+        transform.position = Vector3.Lerp(transform.position, new Vector3(player.transform.position.x, transform.position.y, transform.position.z), 0.05f);
     }
 }
